@@ -1,0 +1,14 @@
+ErrorDocument 404 /web_semestralka/404.php
+AddDefaultCharset UTF-8
+Header unset ETag
+FileETag None
+
+Options +FollowSymLinks -MultiViews
+# Turn mod_rewrite on
+RewriteEngine On
+RewriteBase /web_semestralka/
+
+RewriteRule ^index\.php$ - [L]
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule . index.php [L]
