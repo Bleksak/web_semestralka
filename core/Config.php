@@ -13,7 +13,9 @@ $GLOBALS["config"] = [
 
     "autoload_folders" => ["controller", "core", "model", "view", "helper"],
     "routes" => [
-        "/" => "home"
+        "/" => [
+            "" => "home"
+        ]
     ]
 ];
 
