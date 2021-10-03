@@ -1,10 +1,26 @@
 <?php
 
+/**
+ * Request class for handling GET and POST requests
+ * 
+ * @author Jiri Velek
+ */
 class Request {
-    public static function getRequestMethod() {
+
+    /**
+     * Returns server request method (POST, GET)
+     */
+
+    public static function getRequestMethod() : string {
         return $_SERVER["REQUEST_METHOD"];
     }
 
+    /**
+     * returns POST or GET value
+     * 
+     * @param $key the name of the variable
+     * @param $method the method used (GET/POST)
+     */
     public static function get($key, $method = null) {
         if(!isset($_REQUEST[$key])) {
             return null;
@@ -28,5 +44,4 @@ class Request {
             }
         }
     }
-
 }
