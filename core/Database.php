@@ -14,8 +14,15 @@ class Database
 
     private function __construct()
     {
-        $dsn = sprintf("mysql:host=%s;dbname=%s", Config::get("db/hostname"), Config::get("db/database"));
-        $this->connection = new PDO($dsn, Config::get("db/username"), Config::get("db/password"));
+        $dbconfig = $GLOBALS["config"]["database"];
+
+        $dbname = $dbconfig["dbname"];
+        $hostname = $dbconfig["hostname"];
+        $username = $dbconfig["username"];
+        $password = $dbconfig["password"];
+
+        $dsn = sprintf("mysql:host=%s;dbname=%s", $hostname, $dbname);
+        $this->connection = new PDO($dsn, $username, $password);
     }
 
     /**
