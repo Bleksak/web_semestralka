@@ -24,4 +24,17 @@ class Cookie {
     public static function delete($name) {
         self::set($name, "", -1);
     }
+
+    /**
+     * returns a cookie value
+     * 
+     * @param $name name of the cookie
+     */
+    public static function get($name) {
+        if(!isset($_COOKIE[$name])) {
+            return null;
+        }
+
+        return $_COOKIE[$name];
+    }
 }
