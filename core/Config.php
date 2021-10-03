@@ -13,9 +13,24 @@ $GLOBALS["config"] = [
 
     "autoload_folders" => ["controller", "core", "model", "view", "helper"],
     "routes" => [
-        "/" => [
-            "" => "home"
-        ]
+        "" => "home",
+        "404" => "404",
+        "portal" => "hehe"
+    ],
+
+    "model" => [
+        "home" => "Home",
+        "404" => "Notfound"
+    ],
+
+    "view" => [
+        "home" => "home.twig",
+        "404" => "404.twig"
+    ],
+
+    "controller" => [
+        "home" => "Home",
+        "404" => "Notfound"
     ]
 ];
 
