@@ -29,7 +29,7 @@ $GLOBALS["config"] = [
     ],
 
     "controller" => [
-        "home" => "Home",
+        "home" => "HomeController",
         "404" => "Notfound"
     ]
 ];
