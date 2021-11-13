@@ -1,5 +1,7 @@
 <?php
 
+namespace core;
+
 /**
  * The PDO database connector, uses the singleton pattern so that limited connections aren't wasted
  * 
@@ -9,12 +11,12 @@
 class Database
 {
     private static self $instance;
-    private PDO $connection;
-    private PDOStatement $stmt;
+    private \PDO $connection;
+    private \PDOStatement $stmt;
 
     private function __construct()
     {
-        $dbconfig = $GLOBALS["config"]["database"];
+        $dbconfig = CONFIG["database"];
 
         $dbname = $dbconfig["dbname"];
         $hostname = $dbconfig["hostname"];
@@ -22,7 +24,7 @@ class Database
         $password = $dbconfig["password"];
 
         $dsn = sprintf("mysql:host=%s;dbname=%s", $hostname, $dbname);
-        $this->connection = new PDO($dsn, $username, $password);
+        $this->connection = new \PDO($dsn, $username, $password);
     }
 
     /**
@@ -50,7 +52,7 @@ class Database
             $opArray = ["=", ">", "<", ">=", "<=", "LIKE"];
 
             if (!in_array($op, $opArray)) {
-                throw new InvalidArgumentException(sprintf("PDO Database exception: Invalid operator %s", $op));
+                throw new \InvalidArgumentException(sprintf("PDO Database exception: Invalid operator %s", $op));
             }
 
             array_push($valuesArray, $second);
@@ -72,9 +74,9 @@ class Database
         }
 
         if ($this->stmt->execute()) {
-            return $this->stmt->fetchAll(PDO::FETCH_OBJ);
+            return $this->stmt->fetchAll(\PDO::FETCH_OBJ);
         } else {
-            throw new RuntimeException("PDO Database query error");
+            throw new \RuntimeException("PDO Database query error");
         }
     }
 
@@ -88,7 +90,7 @@ class Database
             $lastItem = array_pop($what);
 
             foreach ($what as $item) {
-                $whatString .= $what . ", ";
+                $whatString .= $item . ", ";
             }
 
             $whatString .= $lastItem . " ";
