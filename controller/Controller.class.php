@@ -2,6 +2,8 @@
 
 namespace controller;
 
+use \model\User;
+
 abstract class Controller {
     protected $twigArray = [];
 
@@ -17,8 +19,13 @@ abstract class Controller {
         $this->add("page_title", $title);
     }
 
+    protected function addError($error) {
+        $this->twigArray["errors"][] = $error;
+    }
+
     public function __construct() {
-        $this->add("user_logged", \model\User::isLoggedIn());
+        $this->add("base_url", \helper\Server::getScriptDirectory());
+        $this->add("user", User::getData());
     }
 
 
