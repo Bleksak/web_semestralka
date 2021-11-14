@@ -6,9 +6,9 @@ require_once "Config.php";
 
 $app = new \core\Application();
 
-$user = new \model\User();
+// $user = new \model\User();
 
-$user->login("asdf@asdf.com", "asd");
+// $user->login("asdf@asdf.com", "asd");
 // $user->register("asdf@asdf.com", "Jiri", "Velek", "asd");
 
 // if (Request::getRequestMethod() == "POST") {
