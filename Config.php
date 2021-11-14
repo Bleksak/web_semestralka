@@ -16,42 +16,39 @@ const CONFIG = [
         "dbname" => "konference"
     ],
 
-    "autoload_folders" => ["controller", "core", "model", "view", "helper"],
     "upload_dir" => "upload",
+
     "routes" => [
         "" => "home",
         "404" => "404",
-        "portal" => "hehe",
         "register" => "register",
-        "logout" => "logout"
+        "logout" => "logout",
+        "login" => "login",
+        "new" => "newarticle"
     ],
-
-    // "model" => [
-    //     "home" => "Home",
-    //     "404" => "Notfound",
-    //     "register" => "User",
-    //     "logout" => "User"
-    // ],
 
     "view" => [
         "home" => "home.twig",
         "404" => "404.twig",
         "register" => "register.twig",
-        "logout" => "404.twig"
+        "logout" => "404.twig",
+        "login" => "login.twig",
+        "newarticle" => "newarticle.twig"
     ],
 
     "controller" => [
         "home" => \controller\HomeController::class,
-        // "404" => "Notfound",
+        "404" => \controller\NotfoundController::class,
         "register" => \controller\RegisterController::class,
-        "logout" => \controller\LogoutController::class
+        "logout" => \controller\LogoutController::class,
+        "login" => \controller\LoginController::class,
+        "newarticle" => \controller\NewArticleController::class
     ]
 ];
 
 spl_autoload_register(function ($class) {
     foreach (EXT as $ext) {
         $filename = $class . $ext;
-        echo $filename . "<br>";
 
         if (is_file($filename)) {
             require_once $filename;
