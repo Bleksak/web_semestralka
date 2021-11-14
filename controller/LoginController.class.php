@@ -2,22 +2,33 @@
 
 namespace controller;
 
-class LoginController extends Controller {
-    public function execute($params = array()) {
-        // read data from POST
+use \helper\Request;
+use \model\User;
+use \helper\Header;
 
-        $user = new \model\User();
+class LoginController extends Controller
+{
+    public function execute($params = array())
+    {
+
+        if(User::isLoggedIn()) {
+            Header::redirect("/");
+        }
 
         $method = "POST";
 
-        $username = \helper\Request::get("username", $method);
-        $password = \helper\Request::get("password", $method);
+        if (Request::getRequestMethod() == $method) {
+            $username = Request::get("email", $method);
+            $password = Request::get("password", $method);
 
-        try {
-            $user->login($username, $password);
-            \helper\Header::redirect("/");
-        } catch(\Exception $e) {
-            $this->add("error", $e->getMessage());
+            $user = new \model\User();
+
+            try {
+                $user->login($username, $password);
+                Header::redirect("/");
+            } catch (\Exception $e) {
+                $this->addError($e->getMessage());
+            }
         }
     }
 }
