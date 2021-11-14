@@ -3,7 +3,7 @@
 namespace core;
 
 /**
- * The PDO database connector, uses the singleton pattern so that limited connections aren't wasted
+ * The PDO database connector
  * 
  * @author Jiri Velek
  */
