@@ -2,6 +2,8 @@
 
 namespace helper;
 
+use RuntimeException;
+
 class File
 {
     public static function upload($name, $requiredFileType = null): string | null
@@ -10,7 +12,7 @@ class File
             return null;
         }
 
-        $uploadDir = $GLOBALS["config"]["upload_dir"];
+        $uploadDir = CONFIG["upload_dir"];
         if (!is_dir($uploadDir)) {
             mkdir($uploadDir);
         }
@@ -23,15 +25,15 @@ class File
 
         if ($requiredFileType != null) {
             if($fileType !== $requiredFileType) {
-                throw new \RuntimeException("");
+                throw new \RuntimeException("Soubor není požadovaného typu");
             }
         }
 
-        if(move_uploaded_file(self::get($name, "tmp_name"), $targetFile)) {
-            return $targetFile;
+        if(!move_uploaded_file(self::get($name, "tmp_name"), $targetFile)) {
+            throw new RuntimeException("Nepodařilo se nahrát soubor");
         }
 
-        return null;
+        return $targetFile;
     }
 
     private static function exists($name)
