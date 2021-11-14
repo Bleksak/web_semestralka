@@ -2,11 +2,21 @@
 
 namespace model;
 
+use \helper\Session;
+use \helper\Hash;
+
 class User extends Model
 {
-    private $username, $id;
     const TABLE = "users";
     const ROLES = "roles";
+
+    const SESSION = "user";
+    const SESSION_ID = "id";
+    const SESSION_FIRSTNAME = "firstname";
+    const SESSION_LASTNAME = "lastname";
+    const SESSION_MAIL = "email";
+    const SESSION_ROLE = "role";
+    const SESSION_LOGGED = "logged";
 
     public function register($email, $firstname, $lastname, $password)
     {
@@ -14,10 +24,10 @@ class User extends Model
         $dummy = $this->db->select(self::TABLE, ["id"], ["email", "=", $email]);
 
         if(sizeof($dummy) > 0) {
-            throw new \RuntimeException("User with email {$email} already exists");
+            throw new \RuntimeException("Uživatel se zadaným emailem už existuje.");
         }
 
-        $password = \helper\Hash::hash($password);
+        $password = Hash::hash($password);
 
         $this->db->insert("users", [
             "firstname" => $firstname,
@@ -30,22 +40,29 @@ class User extends Model
 
     public function login($email, $password)
     {
-        $dbresult = $this->db->select("users", ["id", "password"], ["email", "=", $email]);
+        $dbresult = $this->db->select("users", [], ["email", "=", $email]);
 
         if(sizeof($dbresult) == 0) {
-            throw new \RuntimeException("User not found");
+            throw new \RuntimeException("Uživatel nebyl nalezen");
         }
 
-        if(!\helper\Hash::verify($password, $dbresult[0]->password)) {
-            throw new \RuntimeException("Wrong password");
+        if(!Hash::verify($password, $dbresult[0]->password)) {
+            throw new \RuntimeException("Neplatné heslo");
         }
 
-        \helper\Session::set("user_id", $dbresult[0]->id);
+        Session::set(self::SESSION, [
+            self::SESSION_ID => $dbresult[0]->id,
+            self::SESSION_FIRSTNAME => $dbresult[0]->firstname,
+            self::SESSION_LASTNAME => $dbresult[0]->lastname,
+            self::SESSION_MAIL => $dbresult[0]->email,
+            self::SESSION_ROLE => $dbresult[0]->role,
+            self::SESSION_LOGGED => true
+        ]);
     }
 
     public function logout()
     {
-        \helper\Session::unset("user_id");
+        Session::unset(self::SESSION);
     }
 
     public function update($user, $params = array())
@@ -54,6 +71,18 @@ class User extends Model
     }
 
     public static function isLoggedIn() {
-        return \helper\Session::exists("user_id");
+        return Session::exists(self::SESSION);
+    }
+
+    public function isAdmin() {
+        return Session::get(self::SESSION)[self::SESSION_ROLE] >= 2;
+    }
+
+    public static function getData() {
+        if(!self::isLoggedIn()) {
+            return [self::SESSION_LOGGED => false];
+        }
+
+        return Session::get(self::SESSION);
     }
 }
