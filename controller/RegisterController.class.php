@@ -1,6 +1,10 @@
 <?php
 
 namespace controller;
+use \model\User;
+use \helper\Header;
+
+use \helper\Request;
 
 class RegisterController extends Controller
 {
@@ -8,20 +12,25 @@ class RegisterController extends Controller
     {
         // read data from POST
 
-        $user = new \model\User();
+        if(User::isLoggedIn()) {
+            Header::redirect("/");
+        }
 
-        if (\helper\Request::getRequestMethod() == "POST") {
+        $user = new User();
+
+        if (Request::getRequestMethod() == "POST") {
             $method = "POST";
 
-            $email = \helper\Request::get("email", $method);
-            $firstname = \helper\Request::get("firstname", $method);
-            $lastname = \helper\Request::get("lastname", $method);
-            $password = \helper\Request::get("password", $method);
+            $email = Request::get("email", $method);
+            $firstname = Request::get("firstname", $method);
+            $lastname = Request::get("lastname", $method);
+            $password = Request::get("password", $method);
 
             try {
                 $user->register($email, $firstname, $lastname, $password);
             } catch (\Exception $e) {
                 $this->add("error", $e->getMessage());
+                echo $e->getMessage();
             }
         }
     }

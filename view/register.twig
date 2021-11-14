@@ -1,1 +1,46 @@
-{{  }}
+{% include "header.twig" %}
+
+<div class="container-fluid py-4">
+	<h1 class="text-center display-6 fw-bold">Registrace</h1>
+	<form method="POST" class="mt-4 main-form">
+		{% if errors %}
+			<ul>
+				{% for error in errors %}
+
+					<li>{{ error }}</li>
+
+				{% endfor %}
+			</ul>
+		{% endif %}
+		<div class="row">
+			<div class="col">
+				<div class="form-group">
+					<label for="firstname">Jméno</label>
+					<input type="text" id="firstname" class="form-control" placeholder="Jméno" name="firstname">
+				</div>
+			</div>
+
+			<div class="col">
+				<div class="form-group">
+					<label for="lastname">Přijmení</label>
+					<input type="text" id="lastname" class="form-control" placeholder="Přijmení" name="lastname">
+				</div>
+			</div>
+		</div>
+
+		<div class="pt-2 form-group">
+			<label for="email">E-mailová adresa</label>
+			<input type="email" class="form-control" id="email" placeholder="E-mailová adresa" name="email">
+		</div>
+		<div class="pt-2 form-group">
+			<label for="password">Heslo</label>
+			<input type="password" class="form-control" id="password" placeholder="Heslo" name="password">
+		</div>
+
+		<div class="pt-2 col-md-12 text-center">
+			<button type="submit" class="btn btn-lg btn-primary">Registrovat</button>
+		</div>
+	</form>
+</div>
+
+{% include "footer.twig" %}
