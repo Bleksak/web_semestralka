@@ -1,0 +1,36 @@
+{% include "header.twig" %}
+
+<div class="container-fluid py-4">
+	<h1 class="text-center display-6 fw-bold">Registrace</h1>
+	<form method="POST" class="mt-4 main-form main-form-lg" enctype="multipart/form-data">
+		{% if errors %}
+			<ul>
+				{% for error in errors %}
+
+					<li>{{ error }}</li>
+
+				{% endfor %}
+			</ul>
+		{% endif %}
+
+		<div class="pt-2 form-group">
+			<label for="title">Titulek</label>
+			<input type="text" class="form-control" id="title" placeholder="Titulek" name="title" required>
+		</div>
+		<div class="pt-2 form-group">
+			<label for="abstract">Abstrakt</label>
+			<textarea class="form-control" id="abstract" name="abstract" rows="10" required></textarea>
+		</div>
+
+		<div class="pt-2 form-group text-center">
+			<label for="file">PDF soubor:</label>
+			<input class="form-control-file" id="file" type="file" name="file" required>
+		</div>
+
+		<div class="pt-2 col-md-12 text-center">
+			<button type="submit" class="btn btn-lg btn-primary">Odeslat</button>
+		</div>
+	</form>
+</div>
+
+{% include "footer.twig" %}
