@@ -2,100 +2,155 @@
 
 namespace helper;
 
-class Validator {
+class Validator
+{
 
     private $rules;
 
     private $errors = [];
 
-    public function __construct($rules = []) {
+    public function __construct($rules = [])
+    {
         $this->rules = $rules;
     }
 
-    public function addError($error) {
+    public function addError($error)
+    {
         array_push($this->errors, $error);
     }
 
-    private function getRuleValue($field, $rule) {
-        if(!isset($this->rules[$field][$rule])) {
+    private function getRuleValue($field, $rule)
+    {
+        if (!isset($this->rules[$field][$rule])) {
             return null;
         }
 
         return $this->rules[$field][$rule];
     }
-    
-    private function validateType($requiredType, $value) : bool {
-        switch($requiredType) {
+
+    private function validateType($requiredType, $value): bool
+    {
+        switch ($requiredType) {
             case "numeric": {
-                return is_numeric($value);
-            } break;
+                    return is_numeric($value);
+                }
+                break;
 
             case "email": {
-                return filter_var($value, FILTER_VALIDATE_EMAIL) !== false;
-            } break;
+                    return filter_var($value, FILTER_VALIDATE_EMAIL) !== false;
+                }
+                break;
         }
     }
 
-    public function validate($data) : bool {
-        foreach($this->rules as $fieldName=>$fieldRules) {
+    public function validate($data): bool
+    {
+        foreach ($this->rules as $fieldName => $fieldRules) {
 
             $name = $this->getRuleValue($fieldRules, "name");
 
-            if(isset($data[$fieldName])) {
+            if (isset($data[$fieldName])) {
 
                 $value = $data[$fieldName];
 
-                foreach($fieldRules as $rule => $ruleValue) {
-                    switch($rule) {
+                foreach ($fieldRules as $rule => $ruleValue) {
+                    switch ($rule) {
                         case "minLength": {
-                            if(strlen($value) < $ruleValue) {
-                                $this->addError("{$name} must be at least {$ruleValue} characters long");
+                                if (strlen($value) < $ruleValue) {
+                                    $this->addError("{$name} must be at least {$ruleValue} characters long");
+                                }
                             }
-                        } break;
+                            break;
 
                         case "maxLength": {
-                            if(strlen($value) > $ruleValue) {
-                                $this->addError("{$name} must be at most {$ruleValue} characters long");
+                                if (strlen($value) > $ruleValue) {
+                                    $this->addError("{$name} must be at most {$ruleValue} characters long");
+                                }
                             }
-                        } break;
+                            break;
 
                         case "type": {
-                            if(!$this->validateType($ruleValue, $value)) {
-                                $this->addError("{$name} is in incorrect format");
+                                if (!$this->validateType($ruleValue, $value)) {
+                                    $this->addError("{$name} is in incorrect format");
+                                }
                             }
-                        } break;
+                            break;
 
                         case "regex": {
-                            if(preg_match($ruleValue, $value) == 0) {
-                                $this->addError("{$name} is in incorrect format.");
+                                if (preg_match($ruleValue, $value) == 0) {
+                                    $this->addError("{$name} is in incorrect format.");
+                                }
                             }
-                        } break;
+                            break;
 
                         case "match": {
-                            $name2 = $this->getRuleValue($ruleValue, "name");
+                                $name2 = $this->getRuleValue($ruleValue, "name");
 
-                            if(!isset($data[$ruleValue])) {
-                                $this->addError("{$name2} must match {$name}");
+                                if (!isset($data[$ruleValue])) {
+                                    $this->addError("{$name2} must match {$name}");
+                                }
+
+                                $matchValue = $data[$ruleValue];
+
+                                if ($matchValue != $value) {
+                                    $this->addError("{$name2} must match {$name}");
+                                }
                             }
-
-                            $matchValue = $data[$ruleValue];
-
-                            if($matchValue != $value) {
-                                $this->addError("{$name2} must match {$name}");
-                            }
-                        } break;
+                            break;
                     }
                 }
             } else {
                 $required = $this->getRuleValue($fieldRules, "required");
 
-                if($required) {
+                if ($required) {
                     $this->addError("Field {$name} is required");
                 }
             }
-
         }
 
         return empty($this->errors);
+    }
+
+    public function valid($name, $value, $rules = array())
+    {
+        foreach ($rules as $rule => $ruleValue) {
+            switch ($rule) {
+                case "minLength": {
+                        if (strlen($value) < $ruleValue) {
+                            $this->addError("{$name} musí obsahovat minimálně {$ruleValue} znaků.");
+                        }
+                    }
+                    break;
+
+                case "maxLength": {
+                        if (strlen($value) > $ruleValue) {
+                            $this->addError("{$name} může obsahovat maximálně {$ruleValue} znaků.");
+                        }
+                    }
+                    break;
+
+                case "type": {
+                        if (!$this->validateType($ruleValue, $value)) {
+                            $this->addError("{$name} je v neplatném formátu.");
+                        }
+                    }
+                    break;
+
+                case "regex": {
+                        if (preg_match($ruleValue, $value) == 0) {
+                            $this->addError("{$name} je v neplatném formátu.");
+                        }
+                    }
+                    break;
+
+                case "requried": {
+                        if($ruleValue == true && empty($value)) {
+                            $this->addError("{$name} je povinné pole.");
+                            return;
+                        }
+                    }
+                    break;
+            }
+        }
     }
 }
