@@ -25,6 +25,7 @@ class Database
 
         $dsn = sprintf("mysql:host=%s;dbname=%s", $hostname, $dbname);
         $this->connection = new \PDO($dsn, $username, $password);
+        $this->connection->exec("SET NAMES UTF8");
     }
 
     /**
@@ -39,38 +40,14 @@ class Database
         return self::$instance;
     }
 
-    private static function buildWhereString(array $where, array &$valuesArray): string
-    {
-        $whereString = "";
-
-        if (count($where) != 0) {
-            $whereString = " WHERE ";
-            $first = $where[0];
-            $second = $where[2];
-            $op = $where[1];
-
-            $opArray = ["=", ">", "<", ">=", "<=", "LIKE"];
-
-            if (!in_array($op, $opArray)) {
-                throw new \InvalidArgumentException(sprintf("PDO Database exception: Invalid operator %s", $op));
-            }
-
-            array_push($valuesArray, $second);
-
-            $whereString .= sprintf("%s %s ?", $first, $op);
-        }
-
-        return $whereString;
-    }
-
-    private function query(string $sql, array $params = array())
+    public function query(string $sql, array $params = array())
     {
         $this->stmt = $this->connection->prepare($sql);
 
         $values = array_values($params);
 
         for ($i = 0; $i < count($params); $i++) {
-            $this->stmt->bindValue($i + 1, $values[$i]);
+            $this->stmt->bindValue($i + 1, htmlspecialchars($values[$i]));
         }
 
         if ($this->stmt->execute()) {
@@ -80,7 +57,7 @@ class Database
         }
     }
 
-    public function select(string $table, array $what = array(), array $where = array())
+    public function select(string $table, array $what = array(), string $where = "", array $params = array())
     {
         $whatString = "";
 
@@ -96,21 +73,30 @@ class Database
             $whatString .= $lastItem . " ";
         }
 
-        $valuesArray = [];
-        $whereString = self::buildWhereString($where, $valuesArray);
+        $whereString = empty($where) ? "" : " WHERE " . $where;
 
         $sql = sprintf("SELECT %s FROM %s%s", $whatString, $table, $whereString);
 
-        return $this->query($sql, $valuesArray);
+        return $this->query($sql, $params);
     }
 
-    public function delete(string $table, array $where)
+    public function join(string $first, string $second, string $on, array $what = array(), string $where = "", array $params = array())
     {
-        $values = [];
-        $whereString = self::buildWhereString($where, $values);
+        $fields = empty($what) ? "*" : join(", ", $what);
 
-        $sql = sprintf("DELETE FROM %s%s", $table, $whereString);
-        return $this->query($sql, $values);
+        $whereString = empty($where) ? "" : "WHERE " . $where;
+
+        $sql = "SELECT $fields FROM $first INNER JOIN $second ON $on $whereString";
+
+        return $this->query($sql, $params);
+    }
+
+    public function delete(string $table, string $where, array $params)
+    {
+        $whereString = "WHERE " . $where;
+
+        $sql = "DELETE FROM $table $whereString";
+        return $this->query($sql, $params);
     }
 
     public function insert(string $table, array $data)
@@ -121,28 +107,28 @@ class Database
         $fieldsString = join(", ", $fields);
         $valuesString = join(", ", array_map(fn (): string => "?", $values));
 
-        $sql = sprintf("INSERT INTO %s(%s) VALUES(%s)", $table, $fieldsString, $valuesString);
+        $sql = "INSERT INTO $table($fieldsString) VALUES($valuesString)";
         return $this->query($sql, $values);
     }
 
-    public function update(string $table, array $what, array $where)
+    public function update(string $table, array $what, string $where, array $params)
     {
-        $valuesArray = [];
-        $whereString = self::buildWhereString($where, $valuesArray);
-
         $update = "";
-        $params = [];
+        $updateParams = [];
 
         foreach ($what as $key => $value) {
-            array_push($params, $value);
+            array_push($updateParams, $value);
             $update .= $key . " = ?";
 
-            if (count($params) != count($what) - 1) {
+            if (count($updateParams) != count($what)) {
                 $update .= ", ";
             }
         }
 
-        $sql = sprintf("UPDATE %s SET %s WHERE %s", $table, $update, $whereString);
-        return $this->query($sql, $params);
+        $par = array_merge($updateParams, $params);
+
+        $sql = sprintf("UPDATE %s SET %s WHERE %s", $table, $update, $where);
+        echo $sql;
+        return $this->query($sql, $par);
     }
 }

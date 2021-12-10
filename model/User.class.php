@@ -20,8 +20,8 @@ class User extends Model
 
     public function register($email, $firstname, $lastname, $password)
     {
-        $role = $this->db->select(self::ROLES, ["id"], ["name", "=", "user"])[0]->id;
-        $dummy = $this->db->select(self::TABLE, ["id"], ["email", "=", $email]);
+        $role = $this->db->select(self::ROLES, ["id"], "name = ?", ["user"])[0]->id;
+        $dummy = $this->db->select(self::TABLE, ["id"], "email = ?", [$email]);
 
         if(sizeof($dummy) > 0) {
             throw new \RuntimeException("Uživatel se zadaným emailem už existuje.");
@@ -29,7 +29,7 @@ class User extends Model
 
         $password = Hash::hash($password);
 
-        $this->db->insert("users", [
+        $this->db->insert(self::TABLE, [
             "firstname" => $firstname,
             "lastname" => $lastname,
             "email" => $email,
@@ -40,7 +40,7 @@ class User extends Model
 
     public function login($email, $password)
     {
-        $dbresult = $this->db->select("users", [], ["email", "=", $email]);
+        $dbresult = $this->db->select("users", [], "email = ?", [$email]);
 
         if(sizeof($dbresult) == 0) {
             throw new \RuntimeException("Uživatel nebyl nalezen");
@@ -67,7 +67,7 @@ class User extends Model
 
     public function update($user, $params = array())
     {
-        return $this->db->update(self::TABLE, $params, ["id", '=', $user]);
+        return $this->db->update(self::TABLE, $params, "id=?", [$user]);
     }
 
     public static function isLoggedIn() {
@@ -84,5 +84,10 @@ class User extends Model
         }
 
         return Session::get(self::SESSION);
+    }
+
+    public function find(int $id) {
+        $user = $this->db->select(self::TABLE, ["firstname", "lastname", "email"], "id = ?", [$id]);
+        return empty($user) ? false : $user[0];
     }
 }

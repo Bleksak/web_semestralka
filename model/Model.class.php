@@ -8,5 +8,4 @@ abstract class Model {
     public function __construct() {
         $this->db = \core\Database::getInstance();
     }
-
 }

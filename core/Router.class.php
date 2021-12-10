@@ -4,13 +4,10 @@ namespace core;
 
 class Router
 {
-
-    // private Controller $controller;
-
     private string $route;
     private array $params;
 
-    public function createController()
+    public function __construct()
     {
         $config = CONFIG;
         $base = $config["routes"];
@@ -24,7 +21,7 @@ class Router
         $route = $base;
         $i = 0;
 
-        while ($i < sizeof($uri) && isset($route[$uri[$i]])) {
+        while ($i < sizeof($uri) && isset($route[$uri[$i]]) && !is_string($route)) {
             $route = $route[$uri[$i]];
             $i += 1;
         }
@@ -43,11 +40,6 @@ class Router
 
         $this->route = $route;
         $this->params = array_slice($uri, $i);
-    }
-
-    public function __construct()
-    {
-        $this->createController();
     }
 
     public function getRoute(): string

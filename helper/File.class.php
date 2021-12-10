@@ -36,9 +36,9 @@ class File
         return $targetFile;
     }
 
-    private static function exists($name)
+    public static function exists($name)
     {
-        return isset($_FILES[$name]) && !empty($_FILES[$name]);
+        return isset($_FILES[$name]) && !empty($_FILES[$name]) && $_FILES[$name]["size"] > 0;
     }
 
     private static function get($name, $field)
