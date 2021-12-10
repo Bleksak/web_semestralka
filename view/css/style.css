@@ -10,14 +10,33 @@
     width: 100%;
 }
 
+.footer {
+    height: 60px;
+    width: 100%;
+}
+
+article.blog-post {
+    width: 300px;
+}
+
+.pdf {
+    max-width: 35px;
+}
+
 @media screen and (min-width: 500px) {
     .main-form {
         width: 450px;
+    }
+    article.blog-post {
+        width: 300px;
     }
 }
 
 @media screen and (min-width: 800px) {
     .main-form-lg {
         width: 800px;
+    }
+    article.blog-post {
+        width: 700px;
     }
 }
