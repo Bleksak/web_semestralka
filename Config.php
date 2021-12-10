@@ -2,6 +2,8 @@
 
 require_once "vendor/autoload.php";
 
+setlocale(LC_ALL, "czech");
+
 // we don't want cookies mixed with POST and GET data
 ini_set("request_order", "PG");
 
@@ -24,16 +26,13 @@ const CONFIG = [
         "register" => "register",
         "logout" => "logout",
         "login" => "login",
-        "new" => "newarticle"
-    ],
-
-    "view" => [
-        "home" => "home.twig",
-        "404" => "404.twig",
-        "register" => "register.twig",
-        "logout" => "404.twig",
-        "login" => "login.twig",
-        "newarticle" => "newarticle.twig"
+        "new" => "newarticle",
+        "articles" => "articles",
+        "article" => "article",
+        "profile" => "profile",
+        "user" => "profile",
+        "edit" => "edit",
+        "admin" => "admin"
     ],
 
     "controller" => [
@@ -42,7 +41,12 @@ const CONFIG = [
         "register" => \controller\RegisterController::class,
         "logout" => \controller\LogoutController::class,
         "login" => \controller\LoginController::class,
-        "newarticle" => \controller\NewArticleController::class
+        "newarticle" => \controller\NewArticleController::class,
+        "articles" => \controller\ListArticlesController::class,
+        "article" => \controller\ArticleController::class,
+        "profile" => \controller\ProfileController::class,
+        "edit" => \controller\EditController::class,
+        "admin" => \controller\AdminController::class
     ]
 ];
 

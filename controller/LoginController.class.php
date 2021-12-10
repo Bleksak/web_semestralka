@@ -11,6 +11,9 @@ class LoginController extends Controller
     public function execute($params = array())
     {
 
+        $this->setTitle("Přihlášení");
+        $this->loadTemplate("login.twig");
+
         if(User::isLoggedIn()) {
             Header::redirect("/");
         }

@@ -16,6 +16,9 @@ class RegisterController extends Controller
             Header::redirect("/");
         }
 
+        $this->setTitle("Registrace");
+        $this->loadTemplate("register.twig");
+
         $user = new User();
 
         if (Request::getRequestMethod() == "POST") {
@@ -30,7 +33,6 @@ class RegisterController extends Controller
                 $user->register($email, $firstname, $lastname, $password);
             } catch (\Exception $e) {
                 $this->add("error", $e->getMessage());
-                echo $e->getMessage();
             }
         }
     }

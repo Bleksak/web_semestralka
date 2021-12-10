@@ -16,6 +16,9 @@ class NewArticleController extends Controller {
             Header::redirect("/");
         }
 
+        $this->setTitle("Nový článek");
+        $this->loadTemplate("edit.twig");
+
         if(Request::getRequestMethod() == "POST") {
             $title = Request::get("title");
             $abstract = Request::get("abstract");
