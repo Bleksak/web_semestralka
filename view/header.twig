@@ -20,31 +20,32 @@
 
 					<ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
 						<li>
-							<a href="#" class="nav-link px-2 text-secondary">Home</a>
+							<a href="{{ base_url }}/" class="nav-link px-2 text-white">Hlavní sránka</a>
 						</li>
 						<li>
-							<a href="#" class="nav-link px-2 text-white">Features</a>
+							<a href="{{ base_url }}/articles" class="nav-link px-2 text-white">Články</a>
 						</li>
-						<li>
-							<a href="#" class="nav-link px-2 text-white">Pricing</a>
-						</li>
-						<li>
-							<a href="#" class="nav-link px-2 text-white">FAQs</a>
-						</li>
-						<li>
-							<a href="#" class="nav-link px-2 text-white">About</a>
-						</li>
+
+						{% if user.logged %}
+							<li>
+								<a href="{{ base_url }}/new" class="nav-link px-2 text-white">Přidat článek</a>
+							</li>
+						{% endif %}
 					</ul>
 
-					<form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3">
-						<input type="search" class="form-control form-control-dark" placeholder="Search..." aria-label="Search">
+					<form accept-charset="UTF-8" class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3" action="{{ base_url }}/articles" method="GET" id="searchform">
+						<input type="search" id="searchbox" name="q" class="form-control form-control-dark" placeholder="Vyhledat článek..." aria-label="Vyhledat" value="{{ search_value }}">
 					</form>
 
 					{% if not user.logged %}
 
 						<div class="text-end">
-							<a href="{{ base_url }}/login"><button type="button" class="btn btn-outline-light me-2">Přihlášení</button></a>
-							<a href="{{ base_url }}/register"><button type="button" class="btn btn-warning">Registrace</button></a>
+							<a href="{{ base_url }}/login">
+								<button type="button" class="btn btn-outline-light me-2">Přihlášení</button>
+							</a>
+							<a href="{{ base_url }}/register">
+								<button type="button" class="btn btn-warning">Registrace</button>
+							</a>
 						</div>
 
 					{% else %}
@@ -52,13 +53,23 @@
 						{% if user.role >= 2 %}
 
 							<div class="text-end">
-								<a href="{{ base_url }}/admin"><button type="button" class="btn btn-outline-light me-2">Administrace</button></a>
+								<a href="{{ base_url }}/admin">
+									<button type="button" class="btn btn-outline-light me-2">Administrace</button>
+								</a>
 							</div>
 
 						{% endif %}
 
 						<div class="text-end">
-							<a href="logout"><button type="button" class="btn btn-outline-light me-2">Odhlásit</button></a>
+							<a href="{{ base_url }}/profile">
+								<button type="button" class="btn btn-outline-light me-2">Profil</button>
+							</a>
+						</div>
+
+						<div class="text-end">
+							<a href="{{ base_url }}/logout">
+								<button type="button" class="btn btn-outline-light me-2">Odhlásit</button>
+							</a>
 						</div>
 
 					{% endif %}
@@ -66,4 +77,5 @@
 				</div>
 			</div>
 		</header>
-
+	</body>
+</html>

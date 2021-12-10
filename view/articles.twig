@@ -1,0 +1,31 @@
+{% include "header.twig" %}
+
+<main class="container pt-4">
+	{% if not articles %}
+		<div class="p-5 mb-4 bg-light rounded-3">
+			<div class="container-fluid py-5">
+				<h1 class="display-5 fw-bold">Nebyly nalezeny žádné články</h1>
+				<p class="col-md-8 fs-4">Požadovaný článek nebyl nalezen.</p>
+			</div>
+		</div>
+	{% else %}
+		<div class="row mb-2">
+			{% for article in articles %}
+				<div class="col-md-6">
+					<div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
+						<div class="col p-4 d-flex flex-column position-static">
+							<h3 class="mb-0">{{ article.title }}</h3>
+							<div class="mb-1">
+								<p>{{ article.firstname }} {{ article.lastname }} -- <span class="text-muted">{{ article.date }}</span></p>
+							</div>
+							<p class="card-text mb-auto">{{ article.abstract }}</p>
+							<a href="{{ base_url }}/article/{{ article.id }}" class="stretched-link">Číst dále</a>
+						</div>
+					</div>
+				</div>
+			{% endfor %}
+		</div>
+	{% endif %}
+</main>
+
+{% include "footer.twig" %}

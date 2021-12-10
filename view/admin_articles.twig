@@ -1,0 +1,41 @@
+{% include "header.twig" %}
+
+<div class="container">
+	<div class="table-responsive">
+		<table class="table">
+			<thead>
+				<tr>
+					<th scope="col">#</th>
+					<th scope="col">Název článku</th>
+					<th scope="col">Autor článku</th>
+					<th scope="col">PDF</th>
+					<th scope="col"></th>
+					<th scope="col"></th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for article in articles %}
+					<tr>
+						<th scope="row">{{ article.id }}</th>
+						<td>{{ article.title }}</td>
+						<td>{{ article.firstname }}
+							{{ article.lastname }}</td>
+						<td>
+							<a href="{{ base_url }}/{{ article.file }}"><img class="pdf" src="{{ base_url }}/icon/pdf.svg"></a>
+						</td>
+						<td>
+							<a href="{{ base_url }}/article/{{ article.id }}"><button class="btn btn-primary">Zobrazit</button></a>
+						</td>
+						<td>
+							<a href="{{ base_url }}/admin/delarticle/{{ article.id }}">
+								<button class="btn btn-warning">Smazat</button>
+							</a>
+						</td>
+					</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+	</div>
+</div>
+
+{% include "footer.twig" %}

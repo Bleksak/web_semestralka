@@ -1,0 +1,35 @@
+{% include "header.twig" %}
+<div class="container pt-5">
+	<article class="blog-post">
+		<h2 class="blog-post-title">Profil</h2>
+		<p class="blog-post-meta">Jméno:
+			{{ profile.firstname }}</p>
+		<p class="blog-post-meta">Přijmení:
+			{{ profile.lastname }}</p>
+	</article>
+
+	{% if articles %}
+		<h3>Články uživatele:</h3>
+	{% endif %}
+
+	<div class="row mb-2">
+		{% for article in articles %}
+			<div class="col-md-6">
+				<div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
+					<div class="col p-4 d-flex flex-column position-static">
+						<h3 class="mb-0">{{ article.title }}</h3>
+						<div class="mb-1">
+							<p>
+								<span class="text-muted">{{ article.date }}</span>
+							</p>
+						</div>
+						<p class="card-text mb-auto">{{ article.abstract }}</p>
+						<a href="{{ base_url }}/article/{{ article.id }}" class="stretched-link">Číst dále</a>
+					</div>
+				</div>
+			</div>
+		{% endfor %}
+	</div>
+</div>
+
+{% include "footer.twig" %}

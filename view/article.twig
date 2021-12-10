@@ -1,0 +1,29 @@
+{% if article %}
+
+	{% include "header.twig" %}
+	<div class="container pt-5">
+		<article class="blog-post">
+			<h2 class="blog-post-title">{{ article.title }}</h2>
+			{% if not article.approved and article.author == user.id %}
+				<p class="text-danger">Neschválený<span>, <a href="{{ base_url }}/edit/{{ article.id }}">Upravit</a></span></p>
+			{% elseif article.author == user.id %}
+				<p class="text-success">Schválený</p>
+			{% endif %}
+			<p class="blog-post-meta">{{ article.date }}, napsal
+				<a href="{{ base_url }}/user/{{article.author}}">{{ article.firstname }}
+					{{article.lastname}}</a>
+			</p>
+			<p>{{ article.abstract }}</p>
+			<a href="{{ base_url }}/{{ article.file }}">
+				<button class="btn btn-dark me-2">Stáhnout článek</button>
+			</a>
+		</article>
+	</div>
+
+	{% include "footer.twig" %}
+
+{% else %}
+
+	{% include "404.twig" %}
+
+{% endif %}
