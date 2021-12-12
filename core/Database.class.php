@@ -10,7 +10,7 @@ namespace core;
 
 class Database
 {
-    private static self $instance;
+    private static Self $instance;
     private \PDO $connection;
     private \PDOStatement $stmt;
 
@@ -80,14 +80,13 @@ class Database
         return $this->query($sql, $params);
     }
 
-    public function join(string $first, string $second, string $on, array $what = array(), string $where = "", array $params = array())
+    public function join(string $first, string $second, string $on, array $what = array(), string $where = "", array $params = array(), string $postfix = "")
     {
         $fields = empty($what) ? "*" : join(", ", $what);
 
         $whereString = empty($where) ? "" : "WHERE " . $where;
 
-        $sql = "SELECT $fields FROM $first INNER JOIN $second ON $on $whereString";
-
+        $sql = "SELECT $fields FROM $first INNER JOIN $second ON $on $whereString $postfix";
         return $this->query($sql, $params);
     }
 
