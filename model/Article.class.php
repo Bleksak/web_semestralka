@@ -69,7 +69,7 @@ class Article extends Model
 			User::TABLE,
 			"articles.author = users.id",
 			["articles.author", "articles.id", "articles.title", "articles.abstract", "articles.date", "users.firstname", "users.lastname"],
-			"articles.title LIKE ? AND articles.approved = ?",
+			"LOWER(articles.title) LIKE ? AND articles.approved = ?",
 			["%$name%", 1],
 		);
 	}
