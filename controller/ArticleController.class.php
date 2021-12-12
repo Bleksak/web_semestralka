@@ -10,19 +10,25 @@ class ArticleController extends Controller
 {
     public function execute($params = array())
     {
-        $this->loadTemplate("article.twig");
 
-        if (filter_var($params[0], FILTER_VALIDATE_INT)) {
-            try {
-                $model = new Article();
-                $article = $model->get($params[0]);
-                if ($article !== false && ($article->approved || User::isAdmin() || User::getData()[User::SESSION_ID] == $article->author)) {
-                    $article->date = strftime("%d. %B %G", strtotime($article->date));
-                    $this->setTitle($article->title);
-                    $this->add("article", $article);
-                }
-            } catch (RuntimeException $e) {
+        if (!isset($params[0])) {
+            return;
+        }
+
+        if (!filter_var($params[0], FILTER_VALIDATE_INT)) {
+            return;
+        }
+
+        try {
+            $model = new Article();
+            $article = $model->get($params[0]);
+            if ($article !== false && ($article->approved || User::isAdmin() || User::getData()[User::SESSION_ID] == $article->author)) {
+                $article->date = strftime("%d. %B %G", strtotime($article->date));
+                $this->loadTemplate("article.twig");
+                $this->setTitle($article->title);
+                $this->add("article", $article);
             }
+        } catch (RuntimeException $e) {
         }
     }
 }
