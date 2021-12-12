@@ -32,7 +32,8 @@ const CONFIG = [
         "profile" => "profile",
         "user" => "profile",
         "edit" => "edit",
-        "admin" => "admin"
+        "admin" => "admin",
+        "review" => "review"
     ],
 
     "controller" => [
@@ -46,7 +47,8 @@ const CONFIG = [
         "article" => \controller\ArticleController::class,
         "profile" => \controller\ProfileController::class,
         "edit" => \controller\EditController::class,
-        "admin" => \controller\AdminController::class
+        "admin" => \controller\AdminController::class,
+        "review" => \controller\ReviewController::class
     ]
 ];
 
