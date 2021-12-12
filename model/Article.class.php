@@ -80,11 +80,20 @@ class Article extends Model
 			"articles",
 			"users",
 			"articles.author = users.id",
-			["articles.id", "articles.title", "articles.abstract", "articles.file", "articles.date", "users.firstname", "users.lastname"],
+			["articles.id", "articles.title", "articles.abstract", "articles.file", "articles.date", "articles.approved", "users.firstname", "users.lastname"],
+			"",
+			[],
+			"ORDER BY articles.approved"
 		);
 	}
 
-	public function delete($id) {
+	public function approve($id)
+	{
+		return $this->db->update("articles", ["approved" => true], "id=?", [$id]);
+	}
+
+	public function delete($id)
+	{
 		return $this->db->delete("articles", "id=?", [$id]);
 	}
 }
