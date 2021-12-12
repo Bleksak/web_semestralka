@@ -1,0 +1,52 @@
+{% include "header.twig" %}
+
+<div class="container">
+	<div class="table-responsive">
+		<table class="table">
+			<thead>
+				<tr>
+					<th scope="col">#</th>
+					<th scope="col">Jméno</th>
+					<th scope="col">Přijmení</th>
+					<th scope="col">E-mail</th>
+					<th scope="col">Profil</th>
+					<th scope="col">Role</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for u in users %}
+					<form action="{{ base_url }}/admin/update/{{ u.id }}/">
+						<tr>
+							<th scope="row">{{ u.id }}</th>
+							<td>{{ u.firstname }}</td>
+
+							<td>{{ u.lastname }}</td>
+
+							<td>
+								<a href="mailto:{{ u.email }}">{{ u.email }}</a>
+							</td>
+
+							<td>
+								<a class="btn btn-primary" href="{{ base_url }}/profile/{{ u.id }}">
+									Zobrazit profil
+								</a>
+							</td>
+
+							<td>
+								<select class="role_change">
+									{% for role in roles %}
+										<option value="{{ role.id }}" {% if role.id == u.role_id %} selected {% endif %}>{{ role.name }}</option>
+									{% endfor %}
+								</select>
+							</td>
+						</tr>
+					</form>
+				{% endfor %}
+			</tbody>
+		</table>
+	</div>
+</div>
+
+
+<script src="{{ base_url }}/view/js/admin.js"></script>
+{% include "footer.twig" %}

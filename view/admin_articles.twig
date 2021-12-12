@@ -11,6 +11,8 @@
 					<th scope="col">PDF</th>
 					<th scope="col"></th>
 					<th scope="col"></th>
+					<th scope="col"></th>
+					<th scope="col"></th>
 				</tr>
 			</thead>
 			<tbody>
@@ -24,13 +26,24 @@
 							<a href="{{ base_url }}/{{ article.file }}"><img class="pdf" src="{{ base_url }}/icon/pdf.svg"></a>
 						</td>
 						<td>
-							<a href="{{ base_url }}/article/{{ article.id }}"><button class="btn btn-primary">Zobrazit</button></a>
+							<a class="btn btn-primary" href="{{ base_url }}/article/{{ article.id }}">Zobrazit</a>
 						</td>
 						<td>
-							<a href="{{ base_url }}/admin/delarticle/{{ article.id }}">
-								<button class="btn btn-warning">Smazat</button>
-							</a>
+							<a class="btn btn-info" href="{{ base_url }}/review/{{ article.id }}">Recenze</a>
 						</td>
+						{% if not article.approved %}
+							<td>
+								<a class="btn btn-success" href="{{ base_url }}/admin/approve/{{ article.id }}">Schválit</a>
+							</td>
+							<td>
+								<a class="btn btn-warning" href="{{ base_url }}/admin/delarticle/{{ article.id }}">Zamítnout</a>
+							</td>
+						{% else %}
+							<td></td>
+							<td>
+								<a class="btn btn-warning" href="{{ base_url }}/admin/delarticle/{{ article.id }}">Odstranit</a>
+							</td>
+						{% endif %}
 					</tr>
 				{% endfor %}
 			</tbody>
