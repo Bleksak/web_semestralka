@@ -23,7 +23,7 @@ class User extends Model
         $role = $this->db->select(self::ROLES, ["id"], "name = ?", ["user"])[0]->id;
         $dummy = $this->db->select(self::TABLE, ["id"], "email = ?", [$email]);
 
-        if(sizeof($dummy) > 0) {
+        if (sizeof($dummy) > 0) {
             throw new \RuntimeException("Uživatel se zadaným emailem už existuje.");
         }
 
@@ -42,11 +42,11 @@ class User extends Model
     {
         $dbresult = $this->db->select("users", [], "email = ?", [$email]);
 
-        if(sizeof($dbresult) == 0) {
+        if (sizeof($dbresult) == 0) {
             throw new \RuntimeException("Uživatel nebyl nalezen");
         }
 
-        if(!Hash::verify($password, $dbresult[0]->password)) {
+        if (!Hash::verify($password, $dbresult[0]->password)) {
             throw new \RuntimeException("Neplatné heslo");
         }
 
@@ -70,24 +70,44 @@ class User extends Model
         return $this->db->update(self::TABLE, $params, "id=?", [$user]);
     }
 
-    public static function isLoggedIn() {
+    public static function isLoggedIn()
+    {
         return Session::exists(self::SESSION);
     }
 
-    public function isAdmin() {
+    public static function isAdmin()
+    {
         return Session::get(self::SESSION)[self::SESSION_ROLE] >= 2;
     }
 
-    public static function getData() {
-        if(!self::isLoggedIn()) {
+    public static function getData()
+    {
+        if (!self::isLoggedIn()) {
             return [self::SESSION_LOGGED => false];
         }
 
         return Session::get(self::SESSION);
     }
 
-    public function find(int $id) {
-        $user = $this->db->select(self::TABLE, ["firstname", "lastname", "email"], "id = ?", [$id]);
+    public function getAll() {
+        return $this->db->join(
+            self::TABLE,
+            self::ROLES,
+            "users.role = roles.id",
+            ["users.id", "users.firstname", "users.lastname", "users.email", "roles.id as role_id", "roles.name as role_name"],
+        );
+    }
+
+    public function find(int $id)
+    {
+        $user = $this->db->join(
+            self::TABLE,
+            self::ROLES,
+            "users.role = roles.id",
+            ["users.id", "users.firstname", "users.lastname", "users.email", "roles.id as role_id", "roles.name as role_name"],
+            "users.id = ?",
+            [$id]
+        );
         return empty($user) ? false : $user[0];
     }
 }
