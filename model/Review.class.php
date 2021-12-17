@@ -2,25 +2,32 @@
 
 namespace model;
 
+use RuntimeException;
+
 class Review extends Model
 {
-    public function findForArticle($articleId)
+    public function get($articleId)
     {
         return $this->db->join(
             "reviews",
             "articles",
             "reviews.article = articles.id",
-            [],
+            ["reviews.id", "reviews.author", "reviews.text", "articles.approved"],
             "reviews.article=?",
             [$articleId]
         );
     }
 
-    public function findReview($reviewId)
+    public function add($author, $articleId, $text)
     {
-    }
+        if(empty($text)) {
+            throw new RuntimeException("Recenze nemůže být prázdná");
+        }
 
-    public function addReview($author, $articleId, $text)
-    {
+        $this->db->insert("reviews", [
+            "author" => $author,
+            "article" => $articleId,
+            "text" => $text
+        ]);
     }
 }

@@ -2,12 +2,22 @@
 
 namespace model;
 
+use RuntimeException;
+
 class Article extends Model
 {
 	const TABLE = "articles";
 
 	public function create($author, $title, $abstract, $filename)
 	{
+		if(empty($title)) {
+			throw new RuntimeException("Titulek nemůže být prázdný.");
+		}
+
+		if(empty($abstract)) {
+			throw new RuntimeException("Abstrakt nemůže být prázdný.");
+		}
+
 		$this->db->insert(
 			self::TABLE,
 			[
@@ -94,6 +104,11 @@ class Article extends Model
 
 	public function delete($id)
 	{
-		return $this->db->delete("articles", "id=?", [$id]);
+		$article = $this->get($id);
+
+		if($article) {
+			unlink($article->file);
+			$this->db->delete("articles", "id=?", [$id]);
+		}
 	}
 }

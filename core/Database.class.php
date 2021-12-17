@@ -127,7 +127,6 @@ class Database
         $par = array_merge($updateParams, $params);
 
         $sql = sprintf("UPDATE %s SET %s WHERE %s", $table, $update, $where);
-        echo $sql;
         return $this->query($sql, $par);
     }
 }

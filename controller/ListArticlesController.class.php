@@ -3,6 +3,8 @@
 namespace controller;
 
 use model\Article;
+use model\User;
+use RuntimeException;
 
 class ListArticlesController extends Controller
 {
@@ -23,23 +25,32 @@ class ListArticlesController extends Controller
 
     public function execute($params = array())
     {
-        $this->setTitle("");
+        try {
+            $article = new Article();
+            $name = urldecode(join('/', $params));
+
+            $this->add("search_value", $name);
+
+            $articles = null;
+
+            if(User::isLoggedIn() && User::getData()[User::SESSION_ROLE] == 2) {
+                $articles = empty($params) || empty($params[0]) ? $article->getAll() : $article->search($name);
+            } else {
+                $articles = empty($params) || empty($params[0]) ? $article->getAllApproved() : $article->search($name);
+            }
+
+            $articles = array_map(function ($article) {
+
+                $article->abstract = self::createPreviewText($article);
+                $article->date = strftime("%d. %B %G", strtotime($article->date));
+
+                return $article;
+            }, $articles);
+        } catch (RuntimeException $e) {
+        }
+
         $this->loadTemplate("articles.twig");
-
-        $article = new Article();
-        $name = urldecode(join('/', $params));
-
-        $this->add("search_value", $name);
-
-        $articles = empty($params) ? $article->getAllApproved() : $article->search($name);
-        $articles = array_map(function ($article) {
-
-            $article->abstract = self::createPreviewText($article);
-            $article->date = strftime("%d. %B %G", strtotime($article->date));
-
-            return $article;
-        }, $articles);
-
+        $this->setTitle("Články");
         $this->add("articles", $articles);
     }
 }

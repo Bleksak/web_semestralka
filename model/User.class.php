@@ -4,6 +4,7 @@ namespace model;
 
 use \helper\Session;
 use \helper\Hash;
+use RuntimeException;
 
 class User extends Model
 {
@@ -20,11 +21,36 @@ class User extends Model
 
     public function register($email, $firstname, $lastname, $password)
     {
+
+        if(!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            throw new RuntimeException("Byl zadán neplatný email.");
+        }
+
+        if(empty($firstname)) {
+            throw new RuntimeException("Křestní jméno nemůže být prázdné.");
+        }
+
+        if(empty($lastname)) {
+            throw new RuntimeException("Přijmení nemůže být prázdné.");
+        }
+
+        if(empty($password)) {
+            throw new RuntimeException("Heslo nemůže být prázdné.");
+        }
+
+        if(str_contains($firstname, " ")) {
+            throw new RuntimeException("Jméno nesmí obsahovat mezery.");
+        }
+
+        if(str_contains($lastname, " ")) {
+            throw new RuntimeException("Přijmení nesmí obsahovat mezery.");
+        }
+
         $role = $this->db->select(self::ROLES, ["id"], "name = ?", ["user"])[0]->id;
         $dummy = $this->db->select(self::TABLE, ["id"], "email = ?", [$email]);
 
         if (sizeof($dummy) > 0) {
-            throw new \RuntimeException("Uživatel se zadaným emailem už existuje.");
+            throw new RuntimeException("Uživatel se zadaným emailem už existuje.");
         }
 
         $password = Hash::hash($password);
@@ -43,11 +69,11 @@ class User extends Model
         $dbresult = $this->db->select("users", [], "email = ?", [$email]);
 
         if (sizeof($dbresult) == 0) {
-            throw new \RuntimeException("Uživatel nebyl nalezen");
+            throw new RuntimeException("Uživatel nebyl nalezen");
         }
 
         if (!Hash::verify($password, $dbresult[0]->password)) {
-            throw new \RuntimeException("Neplatné heslo");
+            throw new RuntimeException("Neplatné heslo");
         }
 
         Session::set(self::SESSION, [
@@ -77,7 +103,8 @@ class User extends Model
 
     public static function isAdmin()
     {
-        return Session::get(self::SESSION)[self::SESSION_ROLE] >= 2;
+        $session = Session::get(self::SESSION);
+        return isset($session[self::SESSION_ROLE]) ? $session[self::SESSION_ROLE] >= 3 : false;
     }
 
     public static function getData()

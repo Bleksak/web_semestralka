@@ -6,10 +6,10 @@ use RuntimeException;
 
 class File
 {
-    public static function upload($name, $requiredFileType = null): string | null
+    public static function upload($name, $requiredFileType = null): string
     {
         if (!self::exists($name)) {
-            return null;
+            throw new RuntimeException("Nebyl přiložen soubor.");
         }
 
         $uploadDir = CONFIG["upload_dir"];

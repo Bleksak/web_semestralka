@@ -15,9 +15,17 @@
 				{{article.lastname}}</a>
 		</p>
 		<p>{{ article.abstract }}</p>
-		<a href="{{ base_url }}/{{ article.file }}">
-			<button class="btn btn-dark me-2">Stáhnout článek</button>
+		<a class="btn btn-dark me-2" href="{{ base_url }}/{{ article.file }}">
+			Stáhnout článek
 		</a>
+		<a class="btn btn-primary me-2" href="{{ base_url }}/review/{{ article.id }}">
+			Recenze
+		</a>
+		{% if user.role == 2 %}
+			<a class="btn btn-warning me-2" href="{{ base_url }}/addreview/{{ article.id }}">
+				Přidat recenzi
+			</a>
+		{% endif %}
 	</article>
 </div>
 

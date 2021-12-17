@@ -25,7 +25,7 @@ class ProfileController extends Controller
                     return $article;
                 }, $articles);
 
-                if ($id != User::getData()[User::SESSION_ID]) {
+                if (User::isLoggedIn() && $id != User::getData()[User::SESSION_ID]) {
                     $articles = array_filter($articles, function ($article) {
                         return $article->approved;
                     });

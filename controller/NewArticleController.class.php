@@ -27,9 +27,11 @@ class NewArticleController extends Controller {
             $article = new Article();
 
             try {
-                $filename = File::upload("file");
+                $filename = File::upload("file", "pdf");
                 $article->create($user, $title, $abstract, $filename);
-            } catch (\RuntimeException $e) {
+                Header::redirect("/articles/");
+                
+            } catch (RuntimeException $e) {
                 $this->addError($e->getMessage());
             }
         }

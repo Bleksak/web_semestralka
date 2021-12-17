@@ -5,13 +5,12 @@ use \model\User;
 use \helper\Header;
 
 use \helper\Request;
+use RuntimeException;
 
 class RegisterController extends Controller
 {
     public function execute($params = array())
     {
-        // read data from POST
-
         if(User::isLoggedIn()) {
             Header::redirect("/");
         }
@@ -31,8 +30,9 @@ class RegisterController extends Controller
 
             try {
                 $user->register($email, $firstname, $lastname, $password);
-            } catch (\Exception $e) {
-                $this->add("error", $e->getMessage());
+                Header::redirect("/");
+            } catch (RuntimeException $e) {
+                $this->addError($e->getMessage());
             }
         }
     }
