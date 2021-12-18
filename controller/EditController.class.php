@@ -3,6 +3,7 @@
 namespace controller;
 
 use helper\File;
+use helper\Header;
 use helper\Request;
 use model\Article;
 use model\User;
@@ -51,6 +52,7 @@ class EditController extends Controller {
             }
 
             $model->update($params[0], $update);
+            Header::redirect("/article/$params[0]");
         }
 
         $this->add("article", $article);
