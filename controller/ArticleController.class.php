@@ -22,7 +22,12 @@ class ArticleController extends Controller
         try {
             $model = new Article();
             $article = $model->get($params[0]);
-            if ($article !== false && ($article->approved || User::isAdmin() || User::getData()[User::SESSION_ROLE] == 2 || User::getData()[User::SESSION_ID] == $article->author)) {
+            if (
+                $article !== false &&
+                ($article->approved || User::isLoggedIn() &&
+                    (User::isAdmin() || User::getData()[User::SESSION_ROLE] == 2 ||
+                        User::getData()[User::SESSION_ID] == $article->author))
+            ) {
                 $article->date = strftime("%d. %B %G", strtotime($article->date));
                 $this->loadTemplate("article.twig");
                 $this->setTitle($article->title);
